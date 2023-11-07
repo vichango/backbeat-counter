@@ -7,13 +7,14 @@
     </head>
     <body class="w-screen h-screen bg-blue-200">
         <div class="flex w-full justify-center">
-            <div id="app" class="w-full lg:w-1/2 lg:py-10">
+            <div id="app" class="w-full lg:w-1/2 py-10">
                 <div class="flex flex-row">
-                    <button :class="['w-1/12 me-1 rounded py-12 text-2xl', enableAutoBeat ? 'text-blue-200 bg-blue-600' : 'text-blue-500']" @click="enableAutoBeat = !enableAutoBeat">A</button>
-                    <button class="w-1/12 me-1 rounded py-12 text-blue-500 text-2xl" @click="reset" :disabled="autoBeat">R</button>
-                    <button class="w-1/4 me-1 border-2 rounded py-12 border-blue-500 text-blue-500 text-2xl" @click="addBeat">Click</button>
-                    <div class="w-2/3 border-2 rounded py-12 border-blue-500 text-blue-500 text-2xl text-center" @touchstart="addBeat">Slide</div>
-                    <!-- <button class="w-2/3 border-2 rounded py-12 border-blue-500 text-blue-500 text-2xl" @touchend="addBeat">Tap</button> -->
+                    <button class="w-1/12 me-1 rounded py-12 bg-blue-300 text-blue-100 text-2xl" @click="reset">R</button>
+                    <button
+                        :class="['w-1/12 me-1 rounded py-12 text-2xl', enableAutoBeat ? 'text-blue-200 bg-blue-600' : 'text-blue-300']"
+                        @click="enableAutoBeat = !enableAutoBeat">A</button>
+                    <button class="w-1/4 me-1 rounded py-12 bg-blue-300 text-blue-100 text-2xl" @click="addBeat">Click</button>
+                    <div class="w-2/3 rounded py-12 bg-blue-300 text-blue-100 text-2xl text-center" @touchstart="addBeat">Slide</div>
                 </div>
     
                 <!-- <p>Beat: {{ null === beatCounter ? '—' : (beatCounter + 1) }}</p> -->
@@ -59,6 +60,9 @@
                 <p :class="['text-center text-4xl my-4', autoBeat ? 'text-blue-100' : 'text-blue-500']">
                     {{ null === spb ? '—' : (60 * 1000 / spb).toFixed(0) }}
                 </p>
+                <div v-if="enableAutoBeat && !autoBeat" class="w-full bg-gray-100 rounded-full h-0.5 dark:bg-gray-700">
+                    <div class="bg-blue-300 h-0.5 rounded-full" :style="{ width: `${(100 * beatSpaces.length / beatSpacesMax).toFixed(2)}%` }"></div>
+                </div>
             </div>
         </div>
         <script>
@@ -74,6 +78,7 @@
                         eightCounter: null,
                         phraseCounter: null,
                         enableAutoBeat: false,
+                        
                         // Params.
                         beatSpacesMax: 16,
                         phrases: ['A', 'A', 'B', 'A'],
@@ -113,8 +118,6 @@
                             if (this.beatSpacesMax < this.beatSpaces.length) {
                                 this.beatSpaces = this.beatSpaces.slice(-1 * this.beatSpacesMax);
                             }
-
-                            console.log(this.beatSpaces.length);
                         }
                         
                         this.lastBeat = now;
