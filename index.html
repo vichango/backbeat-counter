@@ -7,7 +7,7 @@
     </head>
     <body class="w-screen h-screen bg-blue-200">
         <div class="flex w-full justify-center">
-            <div id="app" class="w-full lg:w-1/2 py-10">
+            <div id="app" class="w-full lg:w-1/2 lg:py-10">
                 <div class="flex flex-row">
                     <button :class="['w-1/12 me-1 rounded py-12 text-2xl', enableAutoBeat ? 'text-blue-200 bg-blue-600' : 'text-blue-500']" @click="enableAutoBeat = !enableAutoBeat">A</button>
                     <button class="w-1/12 me-1 rounded py-12 text-blue-500 text-2xl" @click="reset" :disabled="autoBeat">R</button>
