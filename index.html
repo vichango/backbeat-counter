@@ -7,61 +7,77 @@
     </head>
     <body class="w-screen h-screen bg-blue-200">
         <div class="flex w-full justify-center">
-            <div id="app" class="w-full lg:w-1/2 py-10">
+            <div id="app" class="w-full lg:w-2/3 px-2 py-2">
                 <div class="flex flex-row">
                     <button class="w-1/12 me-1 rounded py-12 bg-blue-300 text-blue-100 text-2xl" @click="reset">R</button>
                     <button
                         :class="['w-1/12 me-1 rounded py-12 text-2xl', enableAutoBeat ? 'text-blue-200 bg-blue-600' : 'text-blue-300']"
                         @click="enableAutoBeat = !enableAutoBeat">A</button>
-                    <button class="w-1/4 me-1 rounded py-12 bg-blue-300 text-blue-100 text-2xl" @click="addBeat">Click</button>
-                    <div class="w-2/3 rounded py-12 bg-blue-300 text-blue-100 text-2xl text-center" @touchstart="addBeat">Slide</div>
+                    <button class="w-2/3 me-1 rounded py-12 bg-blue-300 text-blue-100 text-2xl" @click="addBeat">Click</button>
+                    <div class="w-1/4 rounded py-12 bg-blue-300 text-blue-100 text-2xl text-center" @touchstart="addBeat">Slide</div>
                 </div>
     
                 <!-- <p>Beat: {{ null === beatCounter ? '—' : (beatCounter + 1) }}</p> -->
-                <p class="text-center text-blue-500 text-lg mt-6">Beat</p>
+                <p class="text-center text-blue-500 text-lg mt-10">Beats</p>
                 <table class="w-full my-4">
                     <tr>
                         <td
                             v-for="(n, i) in 8"
                             :key="`beat-${i}`"
-                            :class="['text-center text-blue-200 p-4', i === beatCounter ? 'bg-blue-500' : 'bg-blue-100']">
+                            :class="['text-center text-blue-300 p-4', i === beatCounter ? 'bg-blue-500' : 'bg-blue-100']">
                             {{ i + 1 }}
                         </td>
                     </tr>
                 </table>
 
                 <!-- <p>Eight: {{ null === eightCounter ? '—' : eightCounter + 1 }}</p> -->
-                <p class="text-center text-blue-500 text-lg mt-6">Huit</p>
+                <p class="text-center text-blue-500 text-lg mt-10">Eight counts</p>
                 <table class="w-full my-4">
                     <tr>
                         <td
                             v-for="(n, i) in 4"
                             :key="`eight-${i}`"
-                            :class="['text-center text-blue-200 p-4', i === eightCounter ? 'bg-blue-500' : 'bg-blue-100']">
+                            :class="['text-center text-blue-300 p-4', i === eightCounter ? 'bg-blue-500' : 'bg-blue-100']">
                             {{ i + 1 }}
                         </td>
                     </tr>
                 </table>
 
                 <!-- <p>Phrase: {{ null === phraseCounter ? '—' : phraseCounter + 1 }}</p> -->
-                <p class="text-center text-blue-500 text-lg mt-6">Phrase</p>
+                <p
+                    class="text-center text-blue-500 text-lg mt-10"
+                    @click="phraseType = (phraseType + 1) % phrases.length">
+                    Phrases
+                </p>
                 <table class="w-full my-4">
                     <tr>
                         <td
-                            v-for="(phrase, i) in phrases"
+                            v-for="(phrase, i) in phrases[phraseType]"
                             :key="`phrase-${i}`"
-                            :class="['text-center text-blue-200 p-4', i === phraseCounter ? 'bg-blue-500' : 'bg-blue-100']">
+                            :class="['text-center text-blue-300 p-4', i === phraseCounter ? 'bg-blue-500' : 'bg-blue-100']">
                             {{ phrase }}
                         </td>
                     </tr>
                 </table>
 
-                <p class="text-center text-blue-500 text-lg mt-6">BPM</p>
+                <p class="text-center text-blue-500 text-lg mt-10">BPM</p>
                 <p :class="['text-center text-4xl my-4', autoBeat ? 'text-blue-100' : 'text-blue-500']">
-                    {{ null === spb ? '—' : (60 * 1000 / spb).toFixed(0) }}
+                    {{ null === spb ? '—' : (60 * 1000 / (spb + spbDelay)).toFixed(0) }}
                 </p>
-                <div v-if="enableAutoBeat && !autoBeat" class="w-full bg-gray-100 rounded-full h-0.5 dark:bg-gray-700">
-                    <div class="bg-blue-300 h-0.5 rounded-full" :style="{ width: `${(100 * beatSpaces.length / beatSpacesMax).toFixed(2)}%` }"></div>
+                <div class="flex flex-full flex-row">
+                    <!-- <div class="w-1/12">
+                        <button v-if="autoBeat" class="w-1/12" onclick="() => spbDelay += 0.5">-.5</button>
+                    </div>
+                    <div class="w-5/6"> -->
+                        <div
+                            v-if="enableAutoBeat && !autoBeat"
+                            class="w-full bg-blue-100 rounded-full h-0.5 dark:bg-gray-200">
+                                <div class="bg-blue-300 h-0.5 rounded-full" :style="{ width: `${(100 * beatSpaces.length / beatSpacesMax).toFixed(2)}%` }"></div>
+                        </div>
+                    <!-- </div>
+                    <div class="w-1/12">
+                        <button v-if="autoBeat" class="w-1/12" onclick="() => spbDelay -= 0.5">+.5</button>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -77,11 +93,16 @@
                         beatCounter: null,
                         eightCounter: null,
                         phraseCounter: null,
-                        enableAutoBeat: false,
+                        enableAutoBeat: true,
+                        phraseType: 0,
+                        spbDelay: 0,
                         
                         // Params.
-                        beatSpacesMax: 16,
-                        phrases: ['A', 'A', 'B', 'A'],
+                        beatSpacesMax: 15,
+                        phrases: [
+                            ['A', 'A', 'B', 'A'],
+                            ['A', 'B', 'A', 'C'],
+                        ],
                     }
                 },
                 computed: {
@@ -102,7 +123,8 @@
                         this.beatCounter = null;
                         this.eightCounter = null;
                         this.phraseCounter = null;
-                        this.enableAutoBeat = false;
+                        this.enableAutoBeat = true;
+                        this.spbDelay = 0;
 
                         if (null !== this.autoBeatInterval) {
                             clearInterval(this.autoBeatInterval)
@@ -123,7 +145,7 @@
                         this.lastBeat = now;
 
                         if (this.autoBeat) {
-                            this.autoBeatInterval = setInterval(this.countBeat, this.spb);
+                            this.autoBeatInterval = setInterval(this.countBeat, this.spb + this.spbDelay);
                         }
 
                         this.countBeat();
@@ -137,7 +159,7 @@
                             if (null === this.phraseCounter) {
                                 this.phraseCounter = 0;
                             } else if (0 === this.eightCounter) {
-                                this.phraseCounter = (this.phraseCounter + 1) % this.phrases.length;
+                                this.phraseCounter = (this.phraseCounter + 1) % this.phrases[this.phraseType].length;
                             }
                         }
                     }
