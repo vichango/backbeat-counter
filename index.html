@@ -38,7 +38,11 @@
                         <td
                             v-for="(n, i) in 8"
                             :key="`beat-${i}`"
-                            :class="['text-center text-blue-300 p-4', i === beatCounter ? 'bg-blue-500' : 'bg-blue-100']">
+                            :class="[
+                                'text-center text-blue-300 text-start p-4',
+                                i === beatCounter ? 'bg-blue-500' : 'bg-blue-100',
+                                0 === i % 2 ? '' : 'relative top-2'
+                            ]">
                             {{ i + 1 }}
                         </td>
                     </tr>
@@ -51,7 +55,7 @@
                         <td
                             v-for="(n, i) in 4"
                             :key="`eight-${i}`"
-                            :class="['text-center text-blue-300 p-4', i === eightCounter ? 'bg-blue-500' : 'bg-blue-100']">
+                            :class="['text-center text-blue-300 text-start p-4', i === eightCounter ? 'bg-blue-500' : 'bg-blue-100']">
                             {{ i + 1 }}
                         </td>
                     </tr>
@@ -68,7 +72,11 @@
                         <td
                             v-for="(phrase, i) in phrases[phraseType]"
                             :key="`phrase-${i}`"
-                            :class="['text-center text-blue-300 p-4', i === phraseCounter ? 'bg-blue-500' : 'bg-blue-100']">
+                            :class="[
+                                'text-center text-blue-300 text-start p-4',
+                                i === phraseCounter ? 'bg-blue-500' : 'bg-blue-100',
+                                'B' === phrase ? 'relative top-2' : ('C' === phrase ? 'relative top-4' : '')
+                            ]">
                             {{ phrase }}
                         </td>
                     </tr>
@@ -121,15 +129,14 @@
                 },
                 created() {
                     window.addEventListener('keydown', (e) => {
-                        switch (e.key) {
-                            case 'r':
+                        switch (e.code) {
+                            case 'KeyR':
                                 this.reset();
                                 break;
-                            case 'a':
+                                case 'KeyA':
                                 this.enableAutoBeat = !this.enableAutoBeat;
                                 break;
-                            case 'espace':
-                            default:
+                                case 'Space':
                                 this.addBeat();
                                 break;
 
